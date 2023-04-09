@@ -13,15 +13,9 @@
 #include "include/utility.h"
 #import "include/objcutils.h"
 
-#define _PLIST @"/var/mobile/Library/Preferences/com.kc57.ihideprefs.plist"
-#define pref_getValue(key) [[NSDictionary dictionaryWithContentsOfFile:_PLIST] valueForKey:key]
-#define pref_getBool(key) [pref_getValue(key) boolValue]
-
-static bool isEnabled = NO;
-static NSString *nsNotificationString = @"com.kc57.ihideprefs/settingschanged";
-
 // jailbreak enabled/disabled group
 %group GROUP_JAILBREAK_DETECTION_BYPASS
+
 
 
 %hook UIApplication
@@ -43,6 +37,7 @@ static NSString *nsNotificationString = @"com.kc57.ihideprefs/settingschanged";
 %end
 
 
+
 %hook NSURL
 + (instancetype)URLWithString:(NSString *)URLString {
   NSArray *url_schemes = @[
@@ -60,6 +55,8 @@ static NSString *nsNotificationString = @"com.kc57.ihideprefs/settingschanged";
 }
 // +[NSURL URLWithString:]
 %end
+
+
 
 %hook NSString
 - (BOOL)writeToFile:(NSString *)path
@@ -113,6 +110,7 @@ static NSString *nsNotificationString = @"com.kc57.ihideprefs/settingschanged";
   return %orig;
 }
 
+
 %hookf(int, lstat, const char *restrict path, struct stat *restrict buf) {
   if(isKnownBadPath(path))
   {
@@ -123,6 +121,7 @@ static NSString *nsNotificationString = @"com.kc57.ihideprefs/settingschanged";
   return %orig;
 }
 
+/*
 %hookf(DIR *, opendir, const char *dirname) {
   if (isKnownBadPath(dirname))
   {
@@ -133,6 +132,7 @@ static NSString *nsNotificationString = @"com.kc57.ihideprefs/settingschanged";
   // Call the original implementation of this function
   return %orig;
 }
+*/
 
 %hookf(DIR *, fopen, const char *restrict filename, const char *restrict mode) {
   if (isKnownBadPath(filename))
@@ -173,57 +173,22 @@ static NSString *nsNotificationString = @"com.kc57.ihideprefs/settingschanged";
 // end GROUP_JAILBREAK_DETECTION_BYPASS
 %end
 
-static void loadPrefs()
-{
-  NSLog(@"[iHide] loadPrefs called");
-  isEnabled = pref_getBool(@"AwesomeSwitch1") ?: isEnabled;
-
-  if(isEnabled)
-  {
-    NSLog(@"[iHide] isEnabled: YES");
-  } else {
-    NSLog(@"[iHide] isEnabled: NO");
-  }
-
-}
-
-static void notificationCallback(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-  NSLog(@"[iHide] notificationCallback called");
-  loadPrefs();
-}
 
 %ctor {
     NSLog(@"[iHide] ctor enter...");
-    loadPrefs();
-
-    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, notificationCallback, (CFStringRef)nsNotificationString, NULL, CFNotificationSuspensionBehaviorCoalesce);
-
-    // If the tweak is not enabled then return
-    if (!isEnabled) {
-      NSLog(@"[iHide] not enabled, leaving...");
-      return;
-    }
-    else {
-      NSLog(@"[iHide] enabled!");
-    }
 
     NSBundle* mainBundle = [NSBundle mainBundle];
     if (mainBundle) {
-		    NSString* bundleIdentifier = mainBundle.bundleIdentifier;
+        NSString* bundleIdentifier = mainBundle.bundleIdentifier;
 
         if (bundleIdentifier) {
-          NSLog(@"[iHide] Checking if filter enabled for bundle: %@", bundleIdentifier);
-
-          if (pref_getBool([@"EnabledApps-" stringByAppendingString:bundleIdentifier])) {
-            NSLog(@"[iHide] Enabled for bundle: %@", bundleIdentifier);
-            %init(GROUP_JAILBREAK_DETECTION_BYPASS);
-          }
-          else {
-              NSLog(@"[iHide] Disabled for bundle: %@", bundleIdentifier);
-          }
-
+            NSLog(@"[iHide] Checking if filter enabled for bundle: %@", bundleIdentifier);
+            if(isBundleIdentifierAllowed([bundleIdentifier cStringUsingEncoding:NSASCIIStringEncoding])) {
+                NSLog(@"[iHide] Enabled for bundle: %@", bundleIdentifier);
+                %init(GROUP_JAILBREAK_DETECTION_BYPASS);
+            }
         }
-      }
+    }
 
-      NSLog(@"[iHide] ctor leave...");
+    NSLog(@"[iHide] ctor leave...");
 }

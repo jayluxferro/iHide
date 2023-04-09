@@ -8,5 +8,6 @@
 bool isKnownBadPath(const char *path);
 bool isKnownSpawnPath(const char *path);
 bool isKnownDylib(const char *path);
+bool isBundleIdentifierAllowed (const char *bundleIdentifier);
 
 #endif

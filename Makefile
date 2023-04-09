@@ -14,8 +14,6 @@ ihide_FILES = Tweak.x src/utility.c src/objcutils.m
 ihide_CFLAGS = -fobjc-arc
 
 include $(THEOS_MAKE_PATH)/tweak.mk
-SUBPROJECTS += ihideprefs
-include $(THEOS_MAKE_PATH)/aggregate.mk
 
 after-install::
 	install.exec "killall -9 SpringBoard"

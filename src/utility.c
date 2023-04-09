@@ -1,5 +1,7 @@
 #include "../include/utility.h"
 
+const char *excludedBundleIndentifiers[] = {};
+
 const char *statPaths[] = {
   "/Applications/Cydia.app",
   "/Applications/FakeCarrier.app",
@@ -132,4 +134,24 @@ bool isKnownDylib(const char *path)
     }
   }
   return false;
+}
+
+
+bool isBundleIdentifierAllowed (const char *bundleIdentifier) {
+    return true;
+    /*
+    if(strstr(bundleIdentifier, "com.apple") != NULL){
+        return false;
+    }
+
+  size_t i = 0;
+  for( i = 0; i < sizeof(excludedBundleIndentifiers) / sizeof(excludedBundleIndentifiers[0]); i++)
+  {
+    if (strcmp(bundleIdentifier, excludedBundleIndentifiers[i]) == 0)
+    {
+      return false;
+    }
+  }
+  return true;
+     */
 }
