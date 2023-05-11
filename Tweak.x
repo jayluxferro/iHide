@@ -37,7 +37,6 @@
 %end
 
 
-
 %hook NSURL
 + (instancetype)URLWithString:(NSString *)URLString {
   NSArray *url_schemes = @[
@@ -55,7 +54,6 @@
 }
 // +[NSURL URLWithString:]
 %end
-
 
 
 %hook NSString
@@ -98,41 +96,40 @@
 // -[NSFileManager fileExistsAtPath:]
 %end
 
+
 // ============ System calls ============
 
-%hookf(int, stat, const char *restrict path, struct stat *restrict buf) {
-  if(isKnownBadPath(path))
-  {
-    NSLog(@"[iHide] hooking stat path: %s", path);
-    return -1;
-  }
-  // Call the original implementation of this function
-  return %orig;
-}
+//%hookf(int, stat, const char *restrict path, struct stat *restrict buf) {
+//  if(isKnownBadPath(path))
+//  {
+//    NSLog(@"[iHide] hooking stat path: %s", path);
+//    return -1;
+//  }
+//  // Call the original implementation of this function
+//  return %orig;
+//}
 
 
-%hookf(int, lstat, const char *restrict path, struct stat *restrict buf) {
-  if(isKnownBadPath(path))
-  {
-    NSLog(@"[iHide] hooking lstat path: %s", path);
-    return -1;
-  }
-  // Call the original implementation of this function
-  return %orig;
-}
+//%hookf(int, lstat, const char *restrict path, struct stat *restrict buf) {
+//  if(isKnownBadPath(path))
+//  {
+//    NSLog(@"[iHide] hooking lstat path: %s", path);
+//    return -1;
+//  }
+//  // Call the original implementation of this function
+//  return %orig;
+//}
 
-/*
-%hookf(DIR *, opendir, const char *dirname) {
-  if (isKnownBadPath(dirname))
-  {
-    NSLog(@"[iHide] hooking opendir dirname: %s", dirname);
-    return NULL;
-    //NSLog(@"[iHide] %@",[NSThread callStackSymbols]);
-  }
-  // Call the original implementation of this function
-  return %orig;
-}
-*/
+//%hookf(DIR *, opendir, const char *dirname) {
+//  if (isKnownBadPath(dirname))
+//  {
+//    NSLog(@"[iHide] hooking opendir dirname: %s", dirname);
+//    return NULL;
+//    //NSLog(@"[iHide] %@",[NSThread callStackSymbols]);
+//  }
+//  // Call the original implementation of this function
+//  return %orig;
+//}
 
 %hookf(DIR *, fopen, const char *restrict filename, const char *restrict mode) {
   if (isKnownBadPath(filename))
@@ -144,7 +141,6 @@
   // Call the original implementation of this function
   return %orig;
 }
-
 
 %hookf(int, posix_spawn, pid_t *restrict pid, const char *restrict path, const posix_spawn_file_actions_t *file_actions, const posix_spawnattr_t *restrict attrp, char *const argv[restrict], char *const envp[restrict]) {
   if(isKnownSpawnPath(path))
@@ -169,7 +165,6 @@
   }
   return retval;
 }
-
 // end GROUP_JAILBREAK_DETECTION_BYPASS
 %end
 

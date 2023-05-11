@@ -1,6 +1,11 @@
 #include "../include/utility.h"
 
-const char *excludedBundleIndentifiers[] = {};
+const char *excludedBundleIndentifiers[] = {
+        "com.ex.substitute.settings",
+        "org.coolstar.SileoStore",
+        "xyz.willy.Zebra",
+        "com.samiiau.loader"
+};
 
 const char *statPaths[] = {
   "/Applications/Cydia.app",
@@ -13,9 +18,13 @@ const char *statPaths[] = {
   "/Applications/SBSettings.app",
   "/Applications/WinterBoard.app",
   "/Applications/blackra1n.app",
+  "/Applications/Sileo.app",
+  "/Applications/Zebra.app",
+  "/Applications/SubstituteSettings.app",
   "/Library/Frameworks/CydiaSubstrate.framework/CydiaSubstrate",
   "/Library/Frameworks/CydiaSubstrate.framework/Libraries/SubstrateLoader.dylib",
   "/Library/LaunchDaemons/com.openssh.sshd.plist",
+  "/Library/LaunchDaemons/us.diatr.shshd.plist",
   "/Library/LaunchDaemons/com.saurik.Cydia.Startup.plist",
   "/Library/MobileSubstrate",
   "/Library/MobileSubstrate/DynamicLibraries/LiveClock.plist",
@@ -138,8 +147,6 @@ bool isKnownDylib(const char *path)
 
 
 bool isBundleIdentifierAllowed (const char *bundleIdentifier) {
-    return true;
-    /*
     if(strstr(bundleIdentifier, "com.apple") != NULL){
         return false;
     }
@@ -153,5 +160,4 @@ bool isBundleIdentifierAllowed (const char *bundleIdentifier) {
     }
   }
   return true;
-     */
 }

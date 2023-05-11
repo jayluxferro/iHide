@@ -92,7 +92,7 @@ bool objc_isKnownBadPath(NSString *path) {
       // Remove trailing '/'
       strParam = [strParam substringToIndex:[strParam length]-1];
     }
-    // do a case insensitive comparison against the paths
+    // do a case-insensitive comparison against the paths
     if( [str caseInsensitiveCompare:strParam] == NSOrderedSame ) {
       //NSLog(@"[iHide] Hooked fileExistsAtPath -> %@", str);
       //NSLog(@"[iHide] Patching fileExistsAtPath return: NO");
