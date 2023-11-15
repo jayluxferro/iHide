@@ -21,9 +21,12 @@
 %hook UIApplication
 - (BOOL)canOpenURL:(NSURL *)url {
   NSArray *url_schemes = @[
-  @"cydia",
-  @"sileo",
-  @"undecimus"];
+          @"activator",
+          @"filza",
+          @"zbra",
+          @"cydia",
+          @"sileo",
+          @"undecimus"];
   for(NSString *str in url_schemes) {
     if ([[url scheme] isEqualToString:str]) {
       NSLog(@"[iHide] Hooked -[UIApplication canOpenURL:] -> %@", [url absoluteString]);
@@ -155,7 +158,7 @@
 %hookf(const char*, _dyld_get_image_name, uint32_t image_index) {
   // Call the original implementation of this function and store the return
   const char* retval = %orig;
-
+  // NSLog(@"[iHide]: DyLib => %s", retval);
   // Check the return for known files to hide
   if(isKnownDylib(retval))
   {

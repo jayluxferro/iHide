@@ -103,7 +103,10 @@ const char *dylibList[] = {
   "libsubstrate",
   "patcyh",
   "substrate",
-  "tweakloader"
+  "tweakloader",
+  "Substitute",
+  "substitute-loader",
+  "libsubstitute"
 };
 
 bool isKnownBadPath(const char *path)
